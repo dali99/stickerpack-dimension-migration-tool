@@ -32,6 +32,7 @@ function generateStickerpackForm(mxc)
 
 	var img = document.createElement("img");
 	img.src=client.mxcUrlToHttp(mxc);
+
 	img.style = "width: 18rem;";
 	img.id="avatarurl";
 	img.className=mxc;
@@ -40,8 +41,8 @@ function generateStickerpackForm(mxc)
 
 function generateForm(mxc, mxcthumb, mimetype)
 {
-	var preview = document.getElementById("preview");
-	
+	var preview = document.getElementById("preview");	
+
 	var div = document.createElement("div");
 	div.className = "card";
 	div.style = "width: 18rem; display: inline-block;";
@@ -50,7 +51,55 @@ function generateForm(mxc, mxcthumb, mimetype)
 	var img = document.createElement("img");
 	img.className="card-img-top";
 	img.src=client.mxcUrlToHttp(mxc);
-	div.appendChild(img);
+	img.mxc = mxc
+	img.onload = function() {
+		var mxc = this.mxc;
+
+		var maxWidth = 512; // Max width for the image
+		var maxHeight = 512;    // Max height for the image
+
+		var width = img.width;
+		var height = img.height;
+		var ratio = 0;  // Used for aspect ratio
+
+		console.log(width);
+		console.log(height);
+
+		// Check if the current width is larger than the max
+		if(width > maxWidth){
+			ratio = maxWidth / width;   // get ratio for scaling image
+			width = maxWidth; // Set new width
+			height = Math.floor(height * ratio);  // Scale height based on ratio
+	        }
+		if(height > maxWidth) {
+			ratio = maxHeight / height;   // get ratio for scaling image
+			height = maxWidth; // Set new width
+			width = Math.floor(width * ratio);  // Scale height based on ratio
+	        }
+		if(width > maxWidth){
+			ratio = maxWidth / width;   // get ratio for scaling image
+			width = maxWidth; // Set new width
+			height = Math.floor(height * ratio);   // Scale height based on ratio
+	        }
+
+		console.log(width);
+		console.log(height);
+
+		div.prepend(img);
+
+		var heightStore = document.createElement("input");
+		heightStore.type = "hidden";
+		heightStore.value = height;
+		heightStore.id = "height" + mxc;
+		div.appendChild(heightStore);
+
+		var widthStore = document.createElement("input");
+		widthStore.type = "hidden";
+		widthStore.value = width;
+		widthStore.id = "width" + mxc;
+		div.appendChild(widthStore);
+
+	}
 
 	var body = document.createElement("div");
 	body.className = "card-body"
@@ -137,30 +186,30 @@ document.getElementById("result").value = txt;
 	txt +=	'				{\n'
 document.getElementById("result").value = txt;
 	txt +=	'					// id: ' + packID + '\n'
-	+	'					type: "' + type +'"\n'
-	+	'					name: "' + stickername + '"\n'
-	+	'					avatarUrl: "' + avatarUrl + '"\n'
-	+	'					isEnabled: ' + isEnabled + '\n'
-	+	'					isPublic: ' + isPublic + '\n'
-	+	'					description: "' + description + '"\n'
-	+	'					authorType: "' + authorType + '"\n';
+	+	'					type: "' + type +'",\n'
+	+	'					name: "' + stickername + '",\n'
+	+	'					avatarUrl: "' + avatarUrl + '",\n'
+	+	'					isEnabled: ' + isEnabled + ',\n'
+	+	'					isPublic: ' + isPublic + ',\n'
+	+	'					description: "' + description + '",\n'
+	+	'					authorType: "' + authorType + '",\n';
 document.getElementById("result").value = txt;
 	if (authorReference === null)
-	txt +=	'					authorReference: ' + "null" + '\n';
+	txt +=	'					authorReference: ' + "null" + ',\n';
 	else
-	txt +=	'					authorReference: "' + authorReference + '"\n';
+	txt +=	'					authorReference: "' + authorReference + '",\n';
 document.getElementById("result").value = txt;
 	if (authorName === null)
-	txt +=	'					authorName: ' + "null" + '\n';
+	txt +=	'					authorName: ' + "null" + ',\n';
 	else
-	txt +=	'					authorName: "' + authorName + '"\n';
+	txt +=	'					authorName: "' + authorName + '",\n';
 document.getElementById("result").value = txt;
-	txt +=	'					license: "' + license +'"\n';
+	txt +=	'					license: "' + license +'",\n';
 document.getElementById("result").value = txt;
 	if (licensePath === null)
-	txt +=	'					licensePath: ' + "null" + '\n';
+	txt +=	'					licensePath: ' + "null" + ',\n';
 	else
-	txt +=	'					licensePath: "' + licensePath + '"\n';
+	txt +=	'					licensePath: "' + licensePath + '",\n';
 document.getElementById("result").value = txt;
 	txt +=	'				}\n'
 	+	'			]))\n';
@@ -171,8 +220,8 @@ document.getElementById("result").value = txt;
 		
 		var mxcImg = div.id;
 		var mxcThmb = document.getElementById("thumb" + mxcImg).value;
-		var thmbWidth = 100;
-		var thmbHeight = 100;
+		var thmbWidth =  document.getElementById("width" + mxcImg).value;
+		var thmbHeight =  document.getElementById("height" + mxcImg).value;
 		var name = document.getElementById("name" + mxcImg).value;
 		var desc = document.getElementById("desc" + mxcImg).value;
 		var type = document.getElementById("mime" + mxcImg).value;
