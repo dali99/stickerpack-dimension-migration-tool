@@ -127,7 +127,6 @@ function generateMigration()
 	var txt = "";
 document.getElementById("result").value = txt;
 	txt += 'import { QueryInterface } from "sequelize";\n'
-	txt += 'import { DataType } from "sequelize-typescript";\n'
 document.getElementById("result").value = txt;
 	txt += 	'export default {\n'
 	+	'	up: (queryInterface: QueryInterface) => {\n'
@@ -137,30 +136,30 @@ document.getElementById("result").value = txt;
 	txt +=	'				{\n'
 document.getElementById("result").value = txt;
 	txt +=	'					// id: ' + packID + '\n'
-	+	'					type: "' + type +'"\n'
-	+	'					name: "' + stickername + '"\n'
-	+	'					avatarUrl: "' + avatarUrl + '"\n'
-	+	'					isEnabled: ' + isEnabled + '\n'
-	+	'					isPublic: ' + isPublic + '\n'
-	+	'					description: "' + description + '"\n'
-	+	'					authorType: "' + authorType + '"\n';
+	+	'					type: "' + type +'",\n'
+	+	'					name: "' + stickername + '",\n'
+	+	'					avatarUrl: "' + avatarUrl + '",\n'
+	+	'					isEnabled: ' + isEnabled + ',\n'
+	+	'					isPublic: ' + isPublic + ',\n'
+	+	'					description: "' + description + '",\n'
+	+	'					authorType: "' + authorType + '",\n';
 document.getElementById("result").value = txt;
 	if (authorReference === null)
-	txt +=	'					authorReference: ' + "null" + '\n';
+	txt +=	'					authorReference: ' + "null" + ',\n';
 	else
-	txt +=	'					authorReference: "' + authorReference + '"\n';
+	txt +=	'					authorReference: "' + authorReference + '",\n';
 document.getElementById("result").value = txt;
 	if (authorName === null)
-	txt +=	'					authorName: ' + "null" + '\n';
+	txt +=	'					authorName: ' + "null" + ',\n';
 	else
-	txt +=	'					authorName: "' + authorName + '"\n';
+	txt +=	'					authorName: "' + authorName + '",\n';
 document.getElementById("result").value = txt;
-	txt +=	'					license: "' + license +'"\n';
+	txt +=	'					license: "' + license +'",\n';
 document.getElementById("result").value = txt;
 	if (licensePath === null)
-	txt +=	'					licensePath: ' + "null" + '\n';
+	txt +=	'					licensePath: ' + "null" + ',\n';
 	else
-	txt +=	'					licensePath: "' + licensePath + '"\n';
+	txt +=	'					licensePath: "' + licensePath + '",\n';
 document.getElementById("result").value = txt;
 	txt +=	'				}\n'
 	+	'			]))\n';
