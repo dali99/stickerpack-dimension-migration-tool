@@ -176,7 +176,6 @@ function generateMigration()
 	var txt = "";
 document.getElementById("result").value = txt;
 	txt += 'import { QueryInterface } from "sequelize";\n'
-	txt += 'import { DataType } from "sequelize-typescript";\n'
 document.getElementById("result").value = txt;
 	txt += 	'export default {\n'
 	+	'	up: (queryInterface: QueryInterface) => {\n'
