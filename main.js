@@ -39,7 +39,7 @@ function generateStickerpackForm(mxc)
 	stickerpack.prepend(img);
 }
 
-function generateForm(mxc, mxcthumb, mimetype)
+function generateForm(mxc, mxcthumb, mimetype, width, height)
 {
 	var preview = document.getElementById("preview");	
 
@@ -52,54 +52,19 @@ function generateForm(mxc, mxcthumb, mimetype)
 	img.className="card-img-top";
 	img.src=client.mxcUrlToHttp(mxc);
 	img.mxc = mxc
-	img.onload = function() {
-		var mxc = this.mxc;
+	div.appendChild(img);
+	
+	var heightStore = document.createElement("input");
+	heightStore.type = "hidden";
+	heightStore.value = height;
+	heightStore.id = "height" + mxc;
+	div.appendChild(heightStore);
 
-		var maxWidth = 512; // Max width for the image
-		var maxHeight = 512;    // Max height for the image
-
-		var width = img.width;
-		var height = img.height;
-		var ratio = 0;  // Used for aspect ratio
-
-		console.log(width);
-		console.log(height);
-
-		// Check if the current width is larger than the max
-		if(width > maxWidth){
-			ratio = maxWidth / width;   // get ratio for scaling image
-			width = maxWidth; // Set new width
-			height = Math.floor(height * ratio);  // Scale height based on ratio
-	        }
-		if(height > maxWidth) {
-			ratio = maxHeight / height;   // get ratio for scaling image
-			height = maxWidth; // Set new width
-			width = Math.floor(width * ratio);  // Scale height based on ratio
-	        }
-		if(width > maxWidth){
-			ratio = maxWidth / width;   // get ratio for scaling image
-			width = maxWidth; // Set new width
-			height = Math.floor(height * ratio);   // Scale height based on ratio
-	        }
-
-		console.log(width);
-		console.log(height);
-
-		div.prepend(img);
-
-		var heightStore = document.createElement("input");
-		heightStore.type = "hidden";
-		heightStore.value = height;
-		heightStore.id = "height" + mxc;
-		div.appendChild(heightStore);
-
-		var widthStore = document.createElement("input");
-		widthStore.type = "hidden";
-		widthStore.value = width;
-		widthStore.id = "width" + mxc;
-		div.appendChild(widthStore);
-
-	}
+	var widthStore = document.createElement("input");
+	widthStore.type = "hidden";
+	widthStore.value = width;
+	widthStore.id = "width" + mxc;
+	div.appendChild(widthStore);
 
 	var body = document.createElement("div");
 	body.className = "card-body"
@@ -138,17 +103,48 @@ function upload(file)
 	var mimetype = file.type;
 
 	client.uploadContent(file).then(mxc => {
-		var http = new XMLHttpRequest();
-		http.open("GET", client.mxcUrlToHttp(mxc, 100, 100, "scale"));
-		http.responseType = "blob";
-		http.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				client.uploadContent(this.response, {type: this.response.type}).then(mxcthumb => {
-					generateForm(mxc, mxcthumb, mimetype);
-				});
+
+		var img = new Image();
+		img.src = client.mxcUrlToHttp(mxc);
+
+		img.onload = function() {
+
+			var maxWidth = 512; // Max width for the image
+			var maxHeight = 512;    // Max height for the image
+
+			var width = img.width;
+			var height = img.height;
+			var ratio = 0;  // Used for aspect ratio
+
+			// Check if the current width is larger than the max
+			if(width > maxWidth){
+				ratio = maxWidth / width;
+				width = maxWidth; // Set new width
+				height = Math.floor(height * ratio);
 			}
-		};
-		http.send();
+			if(height > maxWidth) {
+				ratio = maxHeight / height;
+				height = maxWidth;
+				width = Math.floor(width * ratio);
+			}
+			if(width > maxWidth){
+				ratio = maxWidth / width;
+				width = maxWidth;
+				height = Math.floor(height * ratio);
+			}
+
+			var http = new XMLHttpRequest();
+			http.open("GET", client.mxcUrlToHttp(mxc, width, height, "scale"));
+			http.responseType = "blob";
+			http.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					client.uploadContent(this.response, {type: this.response.type}).then(mxcthumb => {
+						generateForm(mxc, mxcthumb, mimetype, width, height);
+					});
+				}
+			};
+			http.send();
+		}
 	});
 	
 }
