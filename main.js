@@ -153,7 +153,6 @@ function generateMigration()
 {
 	var preview = document.getElementById("preview");
 	
-	var packID = document.getElementById("packID").value;
 	var type = "stickerpack";
 	var stickername = document.getElementById("name").value;
 	var avatarUrl = document.getElementById("avatarurl").className;
@@ -180,8 +179,7 @@ document.getElementById("result").value = txt;
 document.getElementById("result").value = txt;
 	txt +=	'				{\n'
 document.getElementById("result").value = txt;
-	txt +=	'					// id: ' + packID + '\n'
-	+	'					type: "' + type +'",\n'
+	txt +=	'					type: "' + type +'",\n'
 	+	'					name: "' + stickername + '",\n'
 	+	'					avatarUrl: "' + avatarUrl + '",\n'
 	+	'					isEnabled: ' + isEnabled + ',\n'
@@ -209,7 +207,8 @@ document.getElementById("result").value = txt;
 	txt +=	'				}\n'
 	+	'			]))\n';
 
-	txt +=	'			.then(() => queryInterface.bulkInsert("dimension_stickers", [\n';
+	txt +=	'			.then(packId => {\n'
+	+	'				return queryInterface.bulkInsert("dimension_stickers", [\n';
 document.getElementById("result").value = txt;
 	for (let div of preview.childNodes) {
 		
@@ -221,17 +220,14 @@ document.getElementById("result").value = txt;
 		var desc = document.getElementById("desc" + mxcImg).value;
 		var type = document.getElementById("mime" + mxcImg).value;
 document.getElementById("result").value = txt;
-		txt += '				{ packId: ' + packID + ', name: "' + name + '", description: "' + desc + '", ' +
-            'imageMxc: "' + mxcImg + '", thumbnailMxc: "' + mxcThmb + '", mimetype: "' + type + '", ' +
-'thumbnailWidth: ' + thmbWidth + ', thumbnailHeight: ' + thmbHeight + ' },' + '\n'
+		txt += '					{ packId: packId, name: "' + name + '", description: "' + desc + '", ' + 'imageMxc: "' + mxcImg + '", thumbnailMxc: "' + mxcThmb + '", mimetype: "' + type + '", ' + 'thumbnailWidth: ' + thmbWidth + ', thumbnailHeight: ' + thmbHeight + ' },\n'
 	}
 document.getElementById("result").value = txt;
-	txt +=	'			]));\n'
+	txt +=	'				])\n'
+	+	'			});\n'
 	+	'		},\n'
-	+	'	down: (queryInterface: QueryInterface) => {\n'
-	+	'		return Promise.resolve()\n'
-	+	'			.then(() => queryInterface.dropTable("dimension_stickers"))\n'
-	+	'			.then(() => queryInterface.dropTable("dimension_sticker_packs"));\n'
+	+	'	down: (_queryInterface: QueryInterface) => {\n'
+	+	'		throw new Error("there is no going back");\n
 	+	'	}\n'
 	+	'}'
 
