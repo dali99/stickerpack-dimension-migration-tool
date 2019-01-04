@@ -227,7 +227,7 @@ document.getElementById("result").value = txt;
 	+	'			});\n'
 	+	'		},\n'
 	+	'	down: (_queryInterface: QueryInterface) => {\n'
-	+	'		throw new Error("there is no going back");\n
+	+	'		throw new Error("there is no going back");\n'
 	+	'	}\n'
 	+	'}'
 
